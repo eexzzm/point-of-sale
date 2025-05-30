@@ -33,8 +33,8 @@ Pada aplikasi ini terdapat dua jenis role akun, yang masing - masing role memili
 - See all items list
 
 ### How To Start
-- Clone this repository with this command <code>git clone https://github.com/or-abdillh/POS-PHP.git</code>
-- Then, use this command <code>cd POS-PHP</code>
+- Clone this repository with this command <code>git clone https://github.com/eexzzm/point-of-sale.git</code>
+- Then, use this command <code>cd point-of-sale</code>
 - Install all dependencies <code>npm install</code>
 - Create new database with the name <code>DB_Pos</code> and then import tables with using file <code>DB.sql</code>
 - If you have different config for the connection, you can edit the connection with using file <code>src/server/connection.php</code>
