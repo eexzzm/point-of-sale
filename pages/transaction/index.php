@@ -35,7 +35,7 @@ if ( !auth() ) header("Location: ../login");
     <!-- Navbar -->
     <section data-root="navbar"></section>
     <!-- Jumbotron -->
-    <!-- <section data-root="jumbotron"></section> -->
+    <section data-root="jumbotron"></section>
 
     <!-- Main -->
     <main class="container-md px-4 mt-5">
