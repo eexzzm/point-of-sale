@@ -125,34 +125,38 @@ EOT;
               <button type="button" class="btn btn-outline-danger mt-3" id="clearCartBtn">Clear Cart</button>
             </div>
             
-            <!-- cart -->
-        <div class="card p-3 mb-4">
-            <h5 class="card-title mb-3">Payment</h5>
-            <label for="discountInput" class="form-label">Discount (%)</label>
-            <div class="input-group mb-3">
+            <div class="card p-3 mb-4">
+              <h5 class="card-title mb-3">Payment</h5>
+              <!-- discount -->
+              <label for="discountInput" class="form-label">Discount (%)</label>
+              <div class="input-group mb-3">
                 <input type="number" name="discountInput" class="form-control form-control-lg" id="discountInput" value="0" min="0" max="100">
                 <span class="input-group-text">%</span>
-            </div>
-
-            <label for="finalTotal" class="form-label">Final Total</label>
-            <div class="input-group mb-3">
+              </div>
+              
+              <!-- final payment -->
+              <label for="totalPayment" class="form-label">Total Payment</label>
+              <div class="input-group mb-3">
                 <span class="input-group-text">Rp.</span>
-                <input type="text" name="finalTotal" class="form-control form-control-lg" id="finalTotal" readonly value="0">
-            </div>
-
-            <label for="cashInput" class="form-label">Cash</label>
-            <div class="input-group mb-3">
+                <input type="text" name="totalPayment" class="form-control form-control-lg" id="totalPayment" readonly value="0">
+              </div>
+              
+              <!-- money payment -->
+              <label for="cashInput" class="form-label">Cash</label>
+              <div class="input-group mb-3">
                 <span class="input-group-text">Rp.</span>
                 <input type="text" placeholder="ex: 45.000" name="cashInput" class="form-control form-control-lg" id="cashInput" required>
-            </div>
-
-            <label for="moneyChangesOutput" class="form-label">Money Changes</label>
-            <div class="input-group mb-3">
+              </div>
+              
+              <!-- money changes -->
+              <label for="moneyChangesOutput" class="form-label">Money Changes</label>
+              <div class="input-group mb-3">
                 <span class="input-group-text">Rp.</span>
                 <input type="text" name="moneyChangesOutput" class="form-control form-control-lg" id="moneyChangesOutput" readonly>
+              </div>
             </div>
-        </div>
-
+            
+            <!-- button -->
         <button name="process_transaction" class="btn btn-primary btn-lg" type="submit">Process Transaction</button>
         <button class="btn btn-secondary btn-lg" type="reset" id="resetFormBtn">Reset Form</button>
     </form>
