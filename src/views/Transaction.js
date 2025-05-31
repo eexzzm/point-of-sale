@@ -58,31 +58,36 @@ const calculateCartTotals = () => {
         subtotal += item.subtotal;
     });
 
-    let discountPercentage = parseFloat(discountInputEl.value) || 0;
+    // Ambil nilai persentase diskon langsung dari input kasir
+    let discountPercentage = parseFloat(discountInputEl.value) || 0; 
+    
+    // Pastikan nilai diskon dalam rentang 0-100%
     if (discountPercentage < 0) discountPercentage = 0;
     if (discountPercentage > 100) discountPercentage = 100;
 
-    let discountAmount = 0;
-    const MIN_AMOUNT_FOR_DISCOUNT = 500000;
-    const DISCOUNT_PERCENTAGE = 10;
-
-    if (subtotal >= MIN_AMOUNT_FOR_DISCOUNT) {
-        discountAmount = (subtotal * DISCOUNT_PERCENTAGE) / 100;
-        discountInputEl.value = DISCOUNT_PERCENTAGE;
-    } else {
-        discountAmount = 0;
-        discountInputEl.value = 0;
-    }
-
+    // Hitung jumlah diskon berdasarkan subtotal dan persentase input kasir
+    let discountAmount = (subtotal * discountPercentage) / 100;
+    
+    // Perhitungan total akhir setelah diskon
     let totalPayment = subtotal - discountAmount;
     if (totalPayment < 0) totalPayment = 0;
 
+    // Perhitungan cash dan kembalian
     let cashPaid = parseInt(cashInputEl.value.replace(/\D/g,'')) || 0;
     let moneyChanges = cashPaid - totalPayment;
 
+    // Update UI elements
     cartSubtotalEl.textContent = formatRupiah(subtotal);
     totalPaymentEl.value = formatRupiah(totalPayment);
     moneyChangesOutputEl.value = formatRupiah(moneyChanges);
+
+    // Optional: Jika Anda ingin agar input diskon tidak bisa diisi jika keranjang kosong
+    if (cartItems.length === 0) {
+        discountInputEl.value = 0; // Set diskon 0 jika tidak ada item
+        discountInputEl.disabled = true; // Nonaktifkan input
+    } else {
+        discountInputEl.disabled = false; // Aktifkan input jika ada item
+    }
 };
 
 // =======================================================================
