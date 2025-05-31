@@ -318,11 +318,13 @@ transactionForm.addEventListener("submit", async (e) => {
         });
 
         const result = await response.text(); // Read as text to see full PHP output
-        // console.log(result); // Log for debugging
+        console.log("Full PHP Response:", result); // Tambahkan ini untuk melihat apa yang dikembalikan PHP
 
         // Check for redirect in the response (common in PHP for success/failure)
         if (response.redirected) {
-            window.location.href = response.url;
+            if (response.url.includes("code=200")) {
+                window.location.href = response.url;
+            }
         } else {
             // Handle cases where PHP might return JSON or just text without redirect
             // For now, assuming it redirects based on original code structure
