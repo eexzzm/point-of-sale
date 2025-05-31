@@ -51,75 +51,111 @@ if ( !auth() ) header("Location: ../login");
       <?php print_alert() ?>
       
       <!-- Form -->
-      <form method="POST" action="../../src/server/setter/set_transaction.php">
-          <!-- Id Transaction -->
-          <div class="mb-3">
-              <label for="transactionId" class="form-label">ID Transaction</label>
-              <input type="text" placeholder="ex: TRX001" name="transactionId" class="form-control form-control-lg" id="idTransaction" aria-describedby="idTransactionHelp" required >
-              <div id="idTransactionHelp" class="form-text">transaction ID is used to mark each transaction</div>
-          </div>
-          <!-- Name of item -->
-          <div class="mb-3">
-              <input type="hidden" name="itemId" value="" required >
-              <label for="nameOfItem" class="form-label">Name of item</label>
-              <select data-role="select-items" class="form-select form-select-lg" aria-label=".form-select-lg example" name="nameOfItem" id="nameOfItem">
-                <option selected="">--Choose item</option>
-                <?php
-                  foreach ( get_items($conn) as $item )
-                  {
-                    //Get ID, Name, Price
-                    $item_id = $item["item_id"];
-                    $item_name = $item["item_name"];
-                    $item_price = $item["item_price"];
-                    
-                    //Render option with pattern value = id@name@price
-                    echo <<<EOT
-                      <option value="$item_id@$item_name@$item_price"> $item_name </option>
-EOT;
-                  }
-                ?>
-              </select>
-          </div>
+      <form method="POST" action="../../src/server/setter/set_transaction.php" id="transactionForm">
+        <div class="mb-3">
+            <label for="transactionId" class="form-label">ID Transaction</label>
+            <input type="text" placeholder="ex: TRX001" name="transactionId" class="form-control form-control-lg" id="transactionId" aria-describedby="idTransactionHelp" required>
+            <div id="idTransactionHelp" class="form-text">transaction ID is used to mark each transaction</div>
+        </div>
 
-          <!-- amount of item -->
-          <label for="amountOfItem" class="form-label">Amounts of item</label>
-          <div class="input-group mb-3">
+        <div class="card p-3 mb-4">
+            <h5 class="card-title mb-3">Add Item to Cart</h5>
+            <div class="mb-3">
+                <input type="hidden" name="selectedItemId" id="selectedItemId" value="" required>
+                <label for="nameOfItem" class="form-label">Name of item</label>
+                <select data-role="select-items" class="form-select form-select-lg" aria-label=".form-select-lg example" id="nameOfItem">
+                  <option selected="" value="">--Choose item</option>
+                  <!-- get item per id -->
+                  <?php
+                      foreach ( get_items($conn) as $item )
+                      {
+                        $item_id = $item["item_id"];
+                        $item_name = $item["item_name"];
+                        $item_price = $item["item_price"];
+                        echo <<<EOT
+                          <option value="$item_id@$item_name@$item_price"> $item_name </option>
+EOT;
+                      }
+                    ?>
+                </select>
+            </div>
+            <!-- amount of item -->
+            <label for="itemQuantity" class="form-label">Quantity</label>
+            <div class="input-group mb-3">
               <span class="input-group-text">Pcs</span>
-              <input type="number" placeholder="ex: 2" name="amountOfItem" class="form-control form-control-lg" id="amountOfItem" required >
-          </div>
-          
-          <!-- price per units -->
-          <label for="pricePerUnit" class="form-label">Price per unit</label>
-          <div class="input-group mb-3">
+              <input type="number" placeholder="ex: 2" name="itemQuantity" class="form-control form-control-lg" id="itemQuantity" value="1" min="1" required>
+            </div>
+            
+            <!-- price -->
+            <label for="currentPricePerUnit" class="form-label">Price per unit</label>
+            <div class="input-group mb-3">
               <span class="input-group-text">Rp.</span>
-              <input type="text" name="pricePerUnit" class="form-control form-control-lg" id="pricePerUnit" readonly>
+              <input type="text" name="currentPricePerUnit" class="form-control form-control-lg" id="currentPricePerUnit" readonly>
+            </div>
+            
+            <button type="button" class="btn btn-info" id="addItemToCartBtn">Add to Cart</button>
           </div>
           
-          <!-- total per units -->
-          <label for="total" class="form-label">Total</label>
-          <div class="input-group mb-3">
-              <span class="input-group-text">Rp.</span>
-              <input type="text" name="total" class="form-control form-control-lg" id="total" readonly>
-          </div>
-          
-          <!-- cash from customer -->
-          <label for="cash" class="form-label">Cash</label>
-          <div class="input-group mb-3">
-              <span class="input-group-text">Rp.</span>
-              <input type="text" placeholder="ex: 45.000,00" name="cash" class="form-control form-control-lg" id="cash" required >
-          </div>
-          
-          <!-- money changes customer -->
-          <label for="moneyChanges" class="form-label">Money Changes</label>
-          <div class="input-group mb-3">
-              <span class="input-group-text">Rp.</span>
-              <input type="text" name="moneyChanges" class="form-control form-control-lg" id="moneyChanges" readonly>
-          </div>
-          
-          <!-- Buttons -->
-          <button name="create_new_transaction" class="btn btn-primary" type="submit">Submit</button>
-          <button class="btn btn-secondary" type="reset">Reset</button>
-      </form>
+          <!-- cart -->
+          <div class="card p-3 mb-4">
+            <h5 class="card-title mb-3">Shopping Cart</h5>
+            <div class="table-responsive">
+              <table class="table table-striped">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Item Name</th>
+                    <th>Quantity</th>
+                    <th>Price per unit</th>
+                    <th>Subtotal</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody id="cartItemsTableBody">
+                  </tbody>
+                  <tfoot>
+                    <tr>
+                      <th colspan="4" class="text-end">Subtotal (before discount)</th>
+                      <td id="cartSubtotal">Rp. 0</td>
+                      <td></td>
+                    </tr>
+                  </tfoot>
+                </table>
+              </div>
+              <button type="button" class="btn btn-outline-danger mt-3" id="clearCartBtn">Clear Cart</button>
+            </div>
+            
+            <!-- cart -->
+        <div class="card p-3 mb-4">
+            <h5 class="card-title mb-3">Payment</h5>
+            <label for="discountInput" class="form-label">Discount (%)</label>
+            <div class="input-group mb-3">
+                <input type="number" name="discountInput" class="form-control form-control-lg" id="discountInput" value="0" min="0" max="100">
+                <span class="input-group-text">%</span>
+            </div>
+
+            <label for="finalTotal" class="form-label">Final Total</label>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Rp.</span>
+                <input type="text" name="finalTotal" class="form-control form-control-lg" id="finalTotal" readonly value="0">
+            </div>
+
+            <label for="cashInput" class="form-label">Cash</label>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Rp.</span>
+                <input type="text" placeholder="ex: 45.000" name="cashInput" class="form-control form-control-lg" id="cashInput" required>
+            </div>
+
+            <label for="moneyChangesOutput" class="form-label">Money Changes</label>
+            <div class="input-group mb-3">
+                <span class="input-group-text">Rp.</span>
+                <input type="text" name="moneyChangesOutput" class="form-control form-control-lg" id="moneyChangesOutput" readonly>
+            </div>
+        </div>
+
+        <button name="process_transaction" class="btn btn-primary btn-lg" type="submit">Process Transaction</button>
+        <button class="btn btn-secondary btn-lg" type="reset" id="resetFormBtn">Reset Form</button>
+    </form>
     </main>    
     
     <!-- Footer -->
