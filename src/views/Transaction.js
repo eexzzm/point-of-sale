@@ -6,11 +6,15 @@ import Breadcumb from "../components/Breadcumb.js";
 const breadcumbEl = document.querySelector("[data-root=breadcumb]");
 
 // Form elements for adding item
-const selectItemsEl = document.getElementById("nameOfItem"); // Changed to getElementById
+const selectItemsEl = document.getElementById("nameOfItem");
 const selectedItemIdEl = document.getElementById("selectedItemId");
 const itemQuantityEl = document.getElementById("itemQuantity");
 const currentPricePerUnitEl = document.getElementById("currentPricePerUnit");
 const addItemToCartBtn = document.getElementById("addItemToCartBtn");
+
+// Debugging logs (tetap di sini)
+console.log("selectItemsEl (should be <select>):", selectItemsEl);
+console.log("currentPricePerUnitEl (should be <input>):", currentPricePerUnitEl);
 
 // Cart display elements
 const cartItemsTableBody = document.getElementById("cartItemsTableBody");
@@ -22,15 +26,11 @@ const discountInputEl = document.getElementById("discountInput");
 const totalPaymentEl = document.getElementById("totalPayment");
 const cashInputEl = document.getElementById("cashInput");
 const moneyChangesOutputEl = document.getElementById("moneyChangesOutput");
-const transactionForm = document.getElementById("transactionForm"); // The main form
+const transactionForm = document.getElementById("transactionForm");
 
 // --- CART STATE ---
-let cartItems = []; // Array to hold items in the cart
-let currentItemPrice = 0; // Price of the currently selected item in the dropdown
-
-// --- INITIAL RENDER ---
-Breadcumb(breadcumbEl, { home: "../../", current: "Transaction" });
-renderCart(); // Render empty cart initially
+let cartItems = [];
+let currentItemPrice = 0;
 
 // --- HELPER FUNCTIONS ---
 
@@ -48,6 +48,9 @@ const calculateItemSubtotal = (quantity, price) => {
     return quantity * price;
 };
 
+// =======================================================================
+// >>>>>> PINDAHKAN BLOK calculateCartTotals KE SINI <<<<<<
+// =======================================================================
 // Function to calculate overall cart totals
 const calculateCartTotals = () => {
     let subtotal = 0;
@@ -57,41 +60,37 @@ const calculateCartTotals = () => {
 
     let discountPercentage = parseFloat(discountInputEl.value) || 0;
     if (discountPercentage < 0) discountPercentage = 0;
-    if (discountPercentage > 100) discountPercentage = 100; // Cap discount at 100%
+    if (discountPercentage > 100) discountPercentage = 100;
 
     let discountAmount = 0;
-    // Apply discount logic: 10% if subtotal >= 500,000 (example)
-    const MIN_AMOUNT_FOR_DISCOUNT = 500000; // Define your discount threshold
-    const DISCOUNT_PERCENTAGE = 10; // Define your discount percentage
+    const MIN_AMOUNT_FOR_DISCOUNT = 500000;
+    const DISCOUNT_PERCENTAGE = 10;
 
     if (subtotal >= MIN_AMOUNT_FOR_DISCOUNT) {
         discountAmount = (subtotal * DISCOUNT_PERCENTAGE) / 100;
-        discountInputEl.value = DISCOUNT_PERCENTAGE; // Auto-fill discount % if criteria met
-        // Optionally, make discountInputEl readonly if auto-applied
-        // discountInputEl.readOnly = true;
+        discountInputEl.value = DISCOUNT_PERCENTAGE;
     } else {
-        // If below threshold or cleared, ensure discount is 0 and input is editable
         discountAmount = 0;
         discountInputEl.value = 0;
-        // discountInputEl.readOnly = false;
     }
 
     let totalPayment = subtotal - discountAmount;
-    if (totalPayment < 0) totalPayment = 0; // Ensure total doesn't go negative
+    if (totalPayment < 0) totalPayment = 0;
 
-    let cashPaid = parseInt(cashInputEl.value.replace(/\D/g,'')) || 0; // Remove non-digits
+    let cashPaid = parseInt(cashInputEl.value.replace(/\D/g,'')) || 0;
     let moneyChanges = cashPaid - totalPayment;
 
-    // Update UI elements
     cartSubtotalEl.textContent = formatRupiah(subtotal);
     totalPaymentEl.value = formatRupiah(totalPayment);
     moneyChangesOutputEl.value = formatRupiah(moneyChanges);
 };
 
-
+// =======================================================================
+// >>>>>> PINDAHKAN BLOK renderCart KE SINI <<<<<<
+// =======================================================================
 // Function to render/re-render cart items in the table
 const renderCart = () => {
-    cartItemsTableBody.innerHTML = ''; // Clear existing items
+    cartItemsTableBody.innerHTML = '';
 
     if (cartItems.length === 0) {
         cartItemsTableBody.innerHTML = `<tr><td colspan="6" class="text-center">No items in cart</td></tr>`;
@@ -122,23 +121,46 @@ const renderCart = () => {
     calculateCartTotals(); // Recalculate totals every time cart renders
 };
 
-// --- EVENT LISTENERS ---
 
+// --- INITIAL RENDER ---
+Breadcumb(breadcumbEl, { home: "../../", current: "Transaction" });
+renderCart(); // Ini sekarang akan menemukan definisi fungsi di atasnya.
+
+
+// --- EVENT LISTENERS ---
+// ... (Bagian Event Listeners tetap di bawah ini) ...
 // 1. When an item is selected from the dropdown
 selectItemsEl.addEventListener("change", e => {
     const value = e.target.value;
-    if (value === "") { // If "--Choose item" is selected
+    console.log("Dropdown value changed to:", value);
+
+    if (value === "") {
         selectedItemIdEl.value = "";
         currentPricePerUnitEl.value = "";
         currentItemPrice = 0;
         itemQuantityEl.value = 1;
+        console.log("Selected empty option, returning.");
         return;
     }
-    const [itemId, itemName, pricePerUnit] = value.split("@");
+    const [itemId, itemName, pricePerUnitStr] = value.split("@");
+    console.log("Parsed values: itemId=", itemId, "itemName=", itemName, "pricePerUnit=", pricePerUnitStr);
+
+    // Membersihkan string harga sebelum parse
+    const cleanedPricePerUnitStr = pricePerUnitStr.replace(/\./g, '');
+    const parsedPrice = parseFloat(cleanedPricePerUnitStr);
+
+    console.log("Parsed Price (numeric, cleaned):", parsedPrice);
+
+    if (isNaN(parsedPrice)) {
+        console.error("Error: pricePerUnit is not a valid number after cleaning:", pricePerUnitStr);
+        currentPricePerUnitEl.value = "Invalid Price";
+        currentItemPrice = 0;
+        return;
+    }
     selectedItemIdEl.value = itemId;
-    currentPricePerUnitEl.value = formatRupiah(parseFloat(pricePerUnit)); // Format for display
-    currentItemPrice = parseFloat(pricePerUnit); // Store as number for calculation
-    itemQuantityEl.value = 1; // Default quantity to 1
+    currentPricePerUnitEl.value = formatRupiah(parsedPrice);
+    currentItemPrice = parsedPrice;
+    itemQuantityEl.value = 1;
 });
 
 // 2. When "Add to Cart" button is clicked
