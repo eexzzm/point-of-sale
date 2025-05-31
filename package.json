@@ -8,14 +8,13 @@
   },
   "repository": {
     "type": "git",
-    "url": "\u0016https://github.com/or-abdillh/POS-PHP.git"
+    "url": "https://https://github.com/eexzzm/point-of-sale.git"
   },
   "keywords": [
     "POS",
     "PHP",
     "MySQL"
   ],
-  "author": "Oka R. Abdillah",
   "license": "ISC",
   "dependencies": {
     "@fortawesome/fontawesome-free": "^5.15.4",
