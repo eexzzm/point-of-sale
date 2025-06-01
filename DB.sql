@@ -69,29 +69,65 @@ INSERT INTO `roles` (`id_role`, `role`) VALUES
 	(2, 'Staff');
 /*!40000 ALTER TABLE `roles` ENABLE KEYS */;
 
--- Dumping structure for table db_pos.transactions
-CREATE TABLE IF NOT EXISTS `transactions` (
+-- Dumping structure for table db_pos.sales
+CREATE TABLE IF NOT EXISTS `sales` (
+  `sale_id` int NOT NULL AUTO_INCREMENT,
+  `transaction_id_txt` varchar(255) NOT NULL,
+  `sale_date` datetime NOT NULL,
+  `total_amount` decimal(15,2) NOT NULL,
+  `cash_paid` decimal(15,2) NOT NULL,
+  `money_changes` decimal(15,2) NOT NULL,
+  `discount_amount` decimal(15,2) DEFAULT '0.00',
+  `created_at` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`sale_id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- Dumping data for table db_pos.sales: ~4 rows (approximately)
+INSERT INTO `sales` (`sale_id`, `transaction_id_txt`, `sale_date`, `total_amount`, `cash_paid`, `money_changes`, `discount_amount`, `created_at`) VALUES
+	(8, 'TRX002', '2025-05-31 18:29:35', 49500.00, 60000.00, 10500.00, 5500.00, '2025-05-31 10:29:35'),
+	(9, 'TRX003', '2025-05-31 18:34:19', 27000.00, 40000.00, 13000.00, 0.00, '2025-05-31 10:34:19'),
+	(10, 'TRX004', '2025-05-31 18:34:58', 21000.00, 100000.00, 79000.00, 21000.00, '2025-05-31 10:34:58'),
+	(11, 'TRX004', '2025-05-31 18:47:38', 56000.00, 100000.00, 44000.00, 14000.00, '2025-05-31 10:47:38');
+
+-- Dumping structure for table db_pos.transaction_details
+CREATE TABLE IF NOT EXISTS `transaction_details` (
   `transaction_id` int NOT NULL AUTO_INCREMENT,
   `item_id` int NOT NULL,
-  `transaction_id_txt` varchar(15) NOT NULL,
-  `transaction_create_at` varchar(50) NOT NULL,
-  `transaction_amount` varchar(30) NOT NULL,
-  `transaction_total` varchar(50) NOT NULL,
-  `transaction_cash` varchar(50) NOT NULL,
-  `transaction_money_changes` varchar(50) NOT NULL,
+  `sale_id` int NOT NULL,
+  `quantity` int NOT NULL,
+  `item_price` decimal(15,2) NOT NULL,
   PRIMARY KEY (`transaction_id`),
-  KEY `transactions_item_id_items_item_id` (`item_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb3;
+  KEY `FK_transaction_details_items` (`item_id`),
+  KEY `fk_transaction_details_sale_id` (`sale_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb3;
 
--- Dumping data for table db_pos.transactions: 5 rows
-/*!40000 ALTER TABLE `transactions` DISABLE KEYS */;
-INSERT INTO `transactions` (`transaction_id`, `item_id`, `transaction_id_txt`, `transaction_create_at`, `transaction_amount`, `transaction_total`, `transaction_cash`, `transaction_money_changes`) VALUES
-	(2, 1, 'TRX001', '01/10/2022 11:30:59 pm', '2', '50.000', '100.000', '50.000'),
-	(4, 2, 'TRX003', '01/10/2022 11:39:41 pm', '1', '27.000', '30.000', '3.000'),
-	(5, 1, 'TRX003', '05/26/2025 09:00:38 pm', '1', '25.000', '50000', '25.000'),
-	(6, 4, 'TRX010', '05/26/2025 09:01:44 pm', '1', '50.000', '50000', '0'),
-	(7, 2, 'TRX010', '05/30/2025 09:37:41 pm', '10', '270.000', '300.000', '30.000');
-/*!40000 ALTER TABLE `transactions` ENABLE KEYS */;
+-- Dumping data for table db_pos.transaction_details: 23 rows
+/*!40000 ALTER TABLE `transaction_details` DISABLE KEYS */;
+INSERT INTO `transaction_details` (`transaction_id`, `item_id`, `sale_id`, `quantity`, `item_price`) VALUES
+	(2, 1, 2, 2, 0.00),
+	(4, 2, 4, 1, 0.00),
+	(5, 1, 5, 1, 0.00),
+	(6, 4, 6, 1, 0.00),
+	(7, 2, 7, 10, 0.00),
+	(8, 1, 1, 1, 25000.00),
+	(9, 4, 1, 2, 15000.00),
+	(10, 1, 2, 3, 25000.00),
+	(11, 4, 2, 2, 15000.00),
+	(12, 2, 2, 1, 27000.00),
+	(13, 1, 3, 1, 25000.00),
+	(14, 1, 4, 1, 25000.00),
+	(15, 1, 5, 1, 25000.00),
+	(16, 1, 6, 1, 25000.00),
+	(17, 1, 7, 1, 25000.00),
+	(18, 4, 7, 1, 15000.00),
+	(19, 4, 8, 2, 15000.00),
+	(20, 1, 8, 1, 25000.00),
+	(21, 2, 9, 1, 27000.00),
+	(22, 4, 10, 1, 15000.00),
+	(23, 2, 10, 1, 27000.00),
+	(24, 1, 11, 1, 25000.00),
+	(25, 4, 11, 3, 15000.00);
+/*!40000 ALTER TABLE `transaction_details` ENABLE KEYS */;
 
 /*!40103 SET TIME_ZONE=IFNULL(@OLD_TIME_ZONE, 'system') */;
 /*!40101 SET SQL_MODE=IFNULL(@OLD_SQL_MODE, '') */;
