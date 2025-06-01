@@ -4,17 +4,14 @@ Aplikasi point of sale berbasis website yang dibangun menggunakan tech stack JS 
 Aplikasi ini dapat membantu dalam melakukan pencatatan setiap transaksi toko serta mengelola item atau inventaris toko. 
 
 ### Languages and Tools
-- Vanila JavaScript
-- PHP 7
+- JavaScript
+- PHP
 - MySQL
 - Bootstrap 5
 - Font Awesome 5
 - DataTables
 - JQuery
-- Termux
 - NPM
-- Acode code editor
-- KS WEB
 - Git
 
 ### Features
