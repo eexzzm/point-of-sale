@@ -17,7 +17,7 @@ if ( isset($_GET["key"]) )
   $is_owner = $_SESSION["role"] == "Owner" ? true : false;
   
   //Create sql
-  $sql = "DELETE FROM transactions WHERE transaction_id = '$key'";
+  $sql = "DELETE FROM sales WHERE sale_id = '$key'";
   
   //query
   if ( $is_owner ) $res = mysqli_query($conn, $sql);
