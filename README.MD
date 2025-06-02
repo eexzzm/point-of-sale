@@ -5,7 +5,7 @@ Aplikasi ini dapat membantu dalam melakukan pencatatan setiap transaksi toko ser
 
 ### Languages and Tools
 - JavaScript
-- PHP
+- PHP 8
 - MySQL
 - Bootstrap 5
 - Font Awesome 5
