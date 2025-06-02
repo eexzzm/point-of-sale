@@ -16,10 +16,10 @@ Navbar(el.navbar);
 Jumbotron({
   element: el.jumbotron,
   title: 'Point Of Sale',
-  sub: 'Website-based purchase transaction recording application using vanila JavaScript, native PHP 7, Bootstrap 5 and MySQL',
+  sub: 'Website-based purchase transaction recording application using vanila JavaScript, native PHP 8, Bootstrap 5 and MySQL',
   btnText: 'Github',
   icon: 'fab fa-github',
-  href: 'https://github.com/or-abdillh/POS-PHP'
+  href: 'https://github.com/eexzzm/point-of-sale'
 });
 
 Footer(el.footer);
